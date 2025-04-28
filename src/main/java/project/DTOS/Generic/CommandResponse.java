@@ -1,19 +1,19 @@
 package project.DTOS.Generic;
 
 public class CommandResponse {
-    private boolean success;
-    private Long id;
+    private final boolean success;
+    private final Long id;
 
     public CommandResponse(boolean success, Long id) {
         this.success = success;
         this.id = id;
     }
 
-    public boolean isSuccess() {
+    public final boolean isSuccess() {
         return success;
     }
 
-    public Long getId() {
+    public final Long getId() {
         return id;
     }
 }
