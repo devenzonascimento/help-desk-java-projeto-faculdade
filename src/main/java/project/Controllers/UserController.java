@@ -1,9 +1,13 @@
 package project.Controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import project.DTOS.Generic.CommandResponse;
+import project.DTOS.User.CreateUserRequest;
 import project.DTOS.UserDTO;
+import project.Entities.Profile;
 import project.Entities.User;
 import project.Services.UserService;
 
@@ -17,12 +21,19 @@ public class UserController {
     UserService userService;
 
     @PostMapping("")
-    public ResponseEntity<UserDTO> create(@RequestBody UserDTO userDTO) {
-        User userToCreate = UserDTO.toUser(userDTO);
+    public ResponseEntity<CommandResponse> create(@RequestBody @Valid CreateUserRequest request) {
+        User userToCreate = new User();
+
+        userToCreate.setName(request.name());
+        userToCreate.setEmail(request.email());
+        userToCreate.setPassword(request.password());
+        userToCreate.setPosition(request.position());
+        userToCreate.setTelephone(request.telephone());
+        userToCreate.setProfile(new Profile(request.profileId(), ""));
 
         User createdUser = userService.create(userToCreate);
 
-        return ResponseEntity.ok(UserDTO.fromUser(createdUser));
+        return ResponseEntity.ok(new CommandResponse(true, createdUser.getId()));
     }
 
     @GetMapping("")
@@ -33,10 +44,10 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<List<UserDTO>> delete(@PathVariable Long id) {
+    public ResponseEntity<CommandResponse> delete(@PathVariable Long id) {
         userService.delete(id);
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(new CommandResponse(true, id));
     }
 
     @PostMapping("/change-password")
