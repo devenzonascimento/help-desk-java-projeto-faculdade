@@ -1,12 +1,12 @@
 package project.Repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import project.Entities.User;
 
+import java.util.Optional;
+
 public interface UserRepository extends JpaRepository<User, Long> {
-//    @Query(value = "SELECT User FROM User WHERE User.name = :name", nativeQuery = false)
-//    Optional<User> findByName(String name);
-//
-//    @Query(value = "SELECT User FROM User WHERE User.email = :email", nativeQuery = false)
-//    Optional<User> findByEmail(String email);
+    @Query("SELECT u FROM User u WHERE u.email = :email")
+    Optional<User> findByEmail(String email);
 }
