@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.DTOS.Generic.CommandResponse;
+import project.DTOS.User.ChangePasswordRequest;
 import project.DTOS.User.CreateUserRequest;
 import project.DTOS.UserDTO;
 import project.Entities.Profile;
@@ -50,8 +51,14 @@ public class UserController {
         return ResponseEntity.ok(new CommandResponse(true, id));
     }
 
-    @PostMapping("/change-password")
-    public ResponseEntity<UserDTO> create(@RequestBody ChangePasswordRequest request) {
-        // TODO: Implementar
+    @PutMapping("/change-password")
+    public ResponseEntity<CommandResponse> create(@RequestBody ChangePasswordRequest request) {
+        User user = userService.changePassword(request);
+
+        if (user != null) {
+            return ResponseEntity.ok(new CommandResponse(true, user.getId()));
+        }
+
+        return ResponseEntity.ok(new CommandResponse(false, 0L));
     }
 }
