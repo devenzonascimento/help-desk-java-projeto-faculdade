@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import project.DTOS.Generic.CommandResponse;
 import project.DTOS.User.ChangePasswordRequest;
 import project.DTOS.User.CreateUserRequest;
+import project.DTOS.User.LoginRequest;
 import project.DTOS.UserDTO;
 import project.Entities.Profile;
 import project.Entities.User;
+import project.Services.AuthenticationService;
 import project.Services.UserService;
 
 import java.util.List;
@@ -20,6 +22,9 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    AuthenticationService authenticationService;
 
     @PostMapping("")
     public ResponseEntity<CommandResponse> create(@RequestBody @Valid CreateUserRequest request) {
@@ -60,5 +65,17 @@ public class UserController {
         }
 
         return ResponseEntity.ok(new CommandResponse(false, 0L));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserDTO> create(@RequestBody @Valid LoginRequest request) {
+        ;
+        User user = authenticationService.login(request.email(), request.password());
+
+        if (user == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok(UserDTO.fromUser(user));
     }
 }
