@@ -26,7 +26,8 @@ public class User implements Serializable {
     @SequenceGenerator(
             name = "SEQ-USER",
             sequenceName = "public.seq_user",
-            allocationSize = 1)
+            allocationSize = 1
+    )
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ-USER")
     private Long id;
 
@@ -46,11 +47,23 @@ public class User implements Serializable {
     private String telephone;
 
     @ManyToOne
-    @JoinColumn(name = "profileId", referencedColumnName = "id", nullable = false, unique = false, insertable = true, updatable = true)
+    @JoinColumn(
+            name = "profileId",
+            referencedColumnName = "id",
+            nullable = false,
+            unique = false,
+            insertable = true,
+            updatable = true
+    )
     private Profile profile;
 
     @OneToMany
-    @JoinTable(name = "userTeam", schema = "public", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "teamId"))
+    @JoinTable(
+            name = "UserTeam",
+            schema = "public",
+            joinColumns = @JoinColumn(name = "userId"),
+            inverseJoinColumns = @JoinColumn(name = "teamId")
+    )
     @JsonManagedReference
     private Collection<Team> teams;
 }

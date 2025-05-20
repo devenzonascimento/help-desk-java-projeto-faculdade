@@ -57,7 +57,7 @@ public class UserController {
     }
 
     @PutMapping("/change-password")
-    public ResponseEntity<CommandResponse> create(@RequestBody ChangePasswordRequest request) {
+    public ResponseEntity<CommandResponse> changePassword(@RequestBody ChangePasswordRequest request) {
         User user = userService.changePassword(request);
 
         if (user != null) {
@@ -68,8 +68,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserDTO> create(@RequestBody @Valid LoginRequest request) {
-        ;
+    public ResponseEntity<UserDTO> login(@RequestBody @Valid LoginRequest request) {
         User user = authenticationService.login(request.email(), request.password());
 
         if (user == null) {
