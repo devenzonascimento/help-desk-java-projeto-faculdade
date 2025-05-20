@@ -13,8 +13,7 @@ public record UserDTO(
         String email,
         String position,
         String telephone,
-        ProfileDTO profile,
-        List<TeamDTO> teams
+        ProfileDTO profile
 ) implements Serializable {
 
     @Serial
@@ -31,8 +30,7 @@ public record UserDTO(
                 user.getEmail(),
                 user.getPosition(),
                 user.getTelephone(),
-                ProfileDTO.valueOf(user.getProfile()),
-                TeamDTO.fromTeams(user.getTeams().stream().toList())
+                ProfileDTO.valueOf(user.getProfile())
         );
     }
 
@@ -49,7 +47,6 @@ public record UserDTO(
         user.setPosition(userDTO.position);
         user.setTelephone(userDTO.telephone);
         user.setProfile(ProfileDTO.toProfile(userDTO.profile()));
-        user.setTeams(TeamDTO.toTeams(userDTO.teams));
 
         return user;
     }
