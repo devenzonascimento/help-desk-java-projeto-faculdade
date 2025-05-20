@@ -28,6 +28,6 @@ public class Team implements Serializable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ-TEAM")
     private Long id;
 
-    @Column(name = "team", nullable = false, length = 50)
-    private String team;
+    @Column(name = "name", nullable = false, length = 50)
+    private String name;
 }
