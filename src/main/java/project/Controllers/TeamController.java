@@ -18,6 +18,6 @@ public class TeamController {
     public @ResponseBody ResponseEntity<TeamDTO> create(@PathVariable String team) {
         Team createdTeam = teamService.create(team);
 
-        return ResponseEntity.ok().body(TeamDTO.valueOf(createdTeam));
+        return ResponseEntity.ok().body(TeamDTO.fromTeam(createdTeam));
     }
 }
