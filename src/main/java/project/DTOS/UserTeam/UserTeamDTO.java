@@ -18,7 +18,7 @@ public record UserTeamDTO(
 ) implements Serializable {
 
     @Serial
-    public static final long serialVersionUID = -4297989842874219L;
+    private static final long serialVersionUID = -4297989842874219L;
 
     public static UserTeamDTO fromUser(User user) {
         if (user == null) {
@@ -51,7 +51,7 @@ public record UserTeamDTO(
     }
 
     public static List<UserTeamDTO> fromUsers(List<User> users) {
-        List<UserTeamDTO> usersTeamDTO = new ArrayList<UserTeamDTO>();
+        List<UserTeamDTO> usersTeamDTO = new ArrayList<>();
 
         if (users != null && !users.isEmpty()) {
             usersTeamDTO.addAll(users.stream().map(UserTeamDTO::fromUser).toList());
@@ -61,7 +61,7 @@ public record UserTeamDTO(
     }
 
     public static List<User> toUsers(List<UserTeamDTO> usersTeamDTO) {
-        List<User> users = new ArrayList<User>();
+        List<User> users = new ArrayList<>();
 
         if (usersTeamDTO != null && !usersTeamDTO.isEmpty()) {
             users.addAll(usersTeamDTO.stream().map(UserTeamDTO::toUser).toList());

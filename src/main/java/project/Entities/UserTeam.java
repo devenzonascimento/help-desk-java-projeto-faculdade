@@ -18,7 +18,7 @@ import java.io.Serializable;
 public class UserTeam implements Serializable {
 
     @Serial
-    public static final long serialVersionUID = -139812389168912389L;
+    private static final long serialVersionUID = -139812389168912389L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
