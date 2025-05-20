@@ -21,12 +21,7 @@ public class UserTeam implements Serializable {
     public static final long serialVersionUID = -139812389168912389L;
 
     @Id
-    @SequenceGenerator(
-            name = "SEQ-USER-TEAM",
-            sequenceName = "public.seq_user_team",
-            allocationSize = 1
-    )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ-USER-TEAM")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne()
