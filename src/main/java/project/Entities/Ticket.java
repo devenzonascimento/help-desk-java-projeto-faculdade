@@ -30,6 +30,7 @@ public class Ticket implements Serializable {
     @JoinColumn(name = "requester", nullable = false)
     private User requester;
 
+    // TODO: Resolver bug que ao restart do app, ele deleta essa coluna e se perde, talvez usar outra estrategia
     @Enumerated(EnumType.STRING)
     @JdbcType(PostgreSQLEnumJdbcType.class)
     @Column(
