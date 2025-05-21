@@ -9,7 +9,6 @@ import project.DTOS.User.ChangePasswordRequest;
 import project.DTOS.User.CreateUserRequest;
 import project.DTOS.User.LoginRequest;
 import project.DTOS.UserDTO;
-import project.Entities.Profile;
 import project.Entities.User;
 import project.Services.AuthenticationService;
 import project.Services.UserService;
@@ -27,19 +26,10 @@ public class UserController {
     AuthenticationService authenticationService;
 
     @PostMapping("")
-    public ResponseEntity<CommandResponse> create(@RequestBody @Valid CreateUserRequest request) {
-        User userToCreate = new User();
+    public ResponseEntity<UserDTO> create(@RequestBody @Valid CreateUserRequest request) {
+        User createdUser = userService.create(request);
 
-        userToCreate.setName(request.name());
-        userToCreate.setEmail(request.email());
-        userToCreate.setPassword(request.password());
-        userToCreate.setPosition(request.position());
-        userToCreate.setTelephone(request.telephone());
-        userToCreate.setProfile(new Profile(request.profileId(), ""));
-
-        User createdUser = userService.create(userToCreate);
-
-        return ResponseEntity.ok(new CommandResponse(true, createdUser.getId()));
+        return ResponseEntity.ok(UserDTO.fromUser(createdUser));
     }
 
     @GetMapping("")

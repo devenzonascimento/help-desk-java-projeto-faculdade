@@ -3,7 +3,10 @@ package project.Services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import project.DTOS.User.ChangePasswordRequest;
+import project.DTOS.User.CreateUserRequest;
+import project.Entities.Profile;
 import project.Entities.User;
+import project.Repositories.ProfileRepository;
 import project.Repositories.UserRepository;
 
 import java.util.List;
@@ -15,8 +18,25 @@ public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    public User create(User user) {
-        return userRepository.save(user);
+    @Autowired
+    ProfileRepository profileRepository;
+
+    public User create(CreateUserRequest request) {
+        User userToCreate = new User();
+
+        userToCreate.setName(request.name());
+        userToCreate.setEmail(request.email());
+        userToCreate.setPassword(request.password());
+        userToCreate.setPosition(request.position());
+        userToCreate.setTelephone(request.telephone());
+
+        Profile profile = profileRepository.findById(request.profileId()).orElse(null);
+
+        if (profile != null) {
+            userToCreate.setProfile(profile);
+        }
+
+        return userRepository.save(userToCreate);
     }
 
     public List<User> getAll() {
