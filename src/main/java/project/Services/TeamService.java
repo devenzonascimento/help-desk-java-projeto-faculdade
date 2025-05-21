@@ -11,9 +11,10 @@ public class TeamService {
     @Autowired
     TeamRepository teamRepository;
 
-    public Team create(String name) {
+    public Team create(String teamName) {
         Team newTeam = new Team();
-        newTeam.setName(name);
+
+        newTeam.setName(teamName);
 
         return teamRepository.save(newTeam);
     }

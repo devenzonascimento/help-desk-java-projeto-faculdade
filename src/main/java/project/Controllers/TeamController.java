@@ -3,7 +3,7 @@ package project.Controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project.DTOS.TeamDTO;
+import project.DTOS.Team.TeamDTO;
 import project.Entities.Team;
 import project.Services.TeamService;
 

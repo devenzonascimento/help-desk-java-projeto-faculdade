@@ -1,7 +1,7 @@
 package project.DTOS.UserTeam;
 
-import project.DTOS.ProfileDTO;
-import project.DTOS.TeamDTO;
+import project.DTOS.Profile.ProfileDTO;
+import project.DTOS.Team.TeamDTO;
 import project.Entities.User;
 
 import java.io.Serial;
@@ -29,7 +29,7 @@ public record UserTeamDTO(
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                ProfileDTO.valueOf(user.getProfile()),
+                ProfileDTO.fromProfile(user.getProfile()),
                 TeamDTO.fromTeams(user.getTeams().stream().toList())
         );
     }

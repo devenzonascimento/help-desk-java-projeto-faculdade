@@ -11,9 +11,10 @@ public class ProfileService {
     @Autowired
     ProfileRepository profileRepository;
 
-    public Profile create(String profile) {
+    public Profile create(String profileName) {
         Profile newProfile = new Profile();
-        newProfile.setProfile(profile);
+
+        newProfile.setName(profileName);
 
         return profileRepository.save(newProfile);
     }

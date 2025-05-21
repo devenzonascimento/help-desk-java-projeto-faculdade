@@ -1,5 +1,6 @@
-package project.DTOS;
+package project.DTOS.User;
 
+import project.DTOS.Profile.ProfileDTO;
 import project.Entities.User;
 
 import java.io.Serial;
@@ -30,7 +31,7 @@ public record UserDTO(
                 user.getEmail(),
                 user.getPosition(),
                 user.getTelephone(),
-                ProfileDTO.valueOf(user.getProfile())
+                ProfileDTO.fromProfile(user.getProfile())
         );
     }
 

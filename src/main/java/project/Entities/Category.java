@@ -21,13 +21,30 @@ public class Category implements Serializable {
     public static final long serialVersionUID = -139812389168912389L;
 
     @Id
-    @SequenceGenerator(
-            name = "SEQ-CATEGORY",
-            sequenceName = "public.seq_category",
-            allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ-CATEGORY")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "category", nullable = false, length = 50)
-    private String category;
+    @Column(name = "name", nullable = false, unique = true, length = 50)
+    private String name;
+
+    public Category(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

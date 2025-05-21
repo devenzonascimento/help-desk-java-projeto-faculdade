@@ -8,7 +8,7 @@ import project.DTOS.Generic.CommandResponse;
 import project.DTOS.User.ChangePasswordRequest;
 import project.DTOS.User.CreateUserRequest;
 import project.DTOS.User.LoginRequest;
-import project.DTOS.UserDTO;
+import project.DTOS.User.UserDTO;
 import project.Entities.User;
 import project.Services.AuthenticationService;
 import project.Services.UserService;

@@ -1,4 +1,4 @@
-package project.DTOS;
+package project.DTOS.Team;
 
 import project.Entities.Team;
 

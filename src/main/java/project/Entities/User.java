@@ -23,12 +23,7 @@ public class User implements Serializable {
     public static final long serialVersionUID = -139812389168912389L;
 
     @Id
-    @SequenceGenerator(
-            name = "SEQ-USER",
-            sequenceName = "public.seq_user",
-            allocationSize = 1
-    )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SEQ-USER")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", nullable = false, length = 200)
@@ -66,4 +61,82 @@ public class User implements Serializable {
     )
     @JsonManagedReference
     private Collection<Team> teams;
+
+    public User() {
+    }
+
+    public User(Long id, String name, String email, String password, String position, String telephone, Profile profile, Collection<Team> teams) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.position = position;
+        this.telephone = telephone;
+        this.profile = profile;
+        this.teams = teams;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public Profile getProfile() {
+        return profile;
+    }
+
+    public void setProfile(Profile profile) {
+        this.profile = profile;
+    }
+
+    public Collection<Team> getTeams() {
+        return teams;
+    }
+
+    public void setTeams(Collection<Team> teams) {
+        this.teams = teams;
+    }
 }
