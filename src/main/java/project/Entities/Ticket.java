@@ -29,7 +29,7 @@ public class Ticket implements Serializable {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "requester", nullable = false)
+    @JoinColumn(name = "requester_id", referencedColumnName = "id", nullable = false)
     private User requester;
 
     @Enumerated(EnumType.STRING)
