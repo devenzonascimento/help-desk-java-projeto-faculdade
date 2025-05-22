@@ -26,15 +26,22 @@ public class UserTeamService {
     @Autowired
     private UserTeamRepository userTeamRepository;
 
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    public User findByUserId(Long userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
 
     @Transactional
     public User saveTeams(Long userId, List<Long> teamIds) {
         User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
-        List<UserTeam> currentUserTeam = userTeamRepository.findByUserId(userId);
+        List<UserTeam> currentUserTeamList = userTeamRepository.findByUserId(userId);
 
         // Times que já estão vinculados
-        Set<Long> currentTeamIds = currentUserTeam.stream()
+        Set<Long> currentTeamIds = currentUserTeamList.stream()
                 .map(userTeam -> userTeam.getTeam().getId())
                 .collect(Collectors.toSet());
 
@@ -52,13 +59,13 @@ public class UserTeamService {
         }
 
         // Remover vínculos que não estão mais presentes
-        for (UserTeam userTeam : currentUserTeam) {
+        for (UserTeam userTeam : currentUserTeamList) {
             if (!teamIds.contains(userTeam.getTeam().getId())) {
                 userTeamRepository.delete(userTeam);
             }
         }
 
-        return userRepository.findById(userId).orElse((null));
+        return userRepository.findById(userId).orElse(null);
     }
 
 }

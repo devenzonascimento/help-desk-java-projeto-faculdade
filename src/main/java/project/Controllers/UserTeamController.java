@@ -1,15 +1,15 @@
 package project.Controllers;
 
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import project.DTOS.User.SaveTeamsRequest;
 import project.DTOS.UserTeam.UserTeamDTO;
 import project.Entities.User;
 import project.Services.UserTeamService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user-team")
@@ -27,5 +27,19 @@ public class UserTeamController {
         }
 
         return ResponseEntity.ok(UserTeamDTO.fromUser(user));
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserTeamDTO> findByUserId(@PathVariable @NotNull Long userId) {
+        User user = userTeamService.findByUserId(userId);
+
+        return ResponseEntity.ok(UserTeamDTO.fromUser(user));
+    }
+
+    @GetMapping("")
+    public ResponseEntity<List<UserTeamDTO>> findAll() {
+        List<User> users = userTeamService.findAll();
+
+        return ResponseEntity.ok(UserTeamDTO.fromUsers(users));
     }
 }
