@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import project.Entities.Team;
 import project.Repositories.TeamRepository;
 
+import java.util.List;
+
 @Service
 public class TeamService {
 
@@ -17,5 +19,9 @@ public class TeamService {
         newTeam.setName(teamName);
 
         return teamRepository.save(newTeam);
+    }
+
+    public List<Team> findAll() {
+        return teamRepository.findAll();
     }
 }

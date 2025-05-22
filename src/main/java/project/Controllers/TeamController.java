@@ -7,6 +7,8 @@ import project.DTOS.Team.TeamDTO;
 import project.Entities.Team;
 import project.Services.TeamService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/team")
 public class TeamController {
@@ -18,6 +20,13 @@ public class TeamController {
     public @ResponseBody ResponseEntity<TeamDTO> create(@PathVariable String team) {
         Team createdTeam = teamService.create(team);
 
-        return ResponseEntity.ok().body(TeamDTO.fromTeam(createdTeam));
+        return ResponseEntity.ok(TeamDTO.fromTeam(createdTeam));
+    }
+
+    @GetMapping("")
+    public @ResponseBody ResponseEntity<List<TeamDTO>> findAll() {
+        List<Team> teams = teamService.findAll();
+
+        return ResponseEntity.ok(TeamDTO.fromTeams(teams));
     }
 }
