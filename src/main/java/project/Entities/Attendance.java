@@ -26,12 +26,7 @@ public class Attendance implements Serializable {
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @JdbcType(PostgreSQLEnumJdbcType.class)
-    @Column(
-        name = "status",
-        nullable = false,
-        columnDefinition = "AttendanceStatus"
-    )
+    @Column(name = "status", nullable = false, length = 15)
     private AttendanceStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)

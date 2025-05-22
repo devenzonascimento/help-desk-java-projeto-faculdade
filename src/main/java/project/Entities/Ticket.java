@@ -3,7 +3,9 @@ package project.Entities;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcType;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.dialect.PostgreSQLEnumJdbcType;
+import org.hibernate.type.SqlTypes;
 import project.Enums.AttendanceStatus;
 
 import java.io.Serial;
@@ -30,14 +32,8 @@ public class Ticket implements Serializable {
     @JoinColumn(name = "requester", nullable = false)
     private User requester;
 
-    // TODO: Resolver bug que ao restart do app, ele deleta essa coluna e se perde, talvez usar outra estrategia
     @Enumerated(EnumType.STRING)
-    @JdbcType(PostgreSQLEnumJdbcType.class)
-    @Column(
-        name = "last_status",
-        nullable = false,
-        columnDefinition = "AttendanceStatus"
-    )
+    @Column(name = "last_status", nullable = false, length = 15)
     private AttendanceStatus lastStatus;
 
     @Column(name = "start_date", nullable = false)
