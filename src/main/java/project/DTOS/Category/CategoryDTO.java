@@ -28,23 +28,23 @@ public record CategoryDTO(Long id, String name) implements Serializable {
         return new Category(categoryDTO.id, categoryDTO.name);
     }
 
-    public static List<CategoryDTO> fromCategorys(List<Category> categorys) {
-        List<CategoryDTO> userDTO = new ArrayList<>();
+    public static List<CategoryDTO> fromCategories(List<Category> categories) {
+        List<CategoryDTO> categoriesDTO = new ArrayList<>();
 
-        if (categorys != null && !categorys.isEmpty()) {
-            userDTO.addAll(categorys.stream().map(CategoryDTO::fromCategory).toList());
+        if (categories != null && !categories.isEmpty()) {
+            categoriesDTO.addAll(categories.stream().map(CategoryDTO::fromCategory).toList());
         }
 
-        return userDTO;
+        return categoriesDTO;
     }
 
-    public static List<Category> toCategorys(List<CategoryDTO> categorysDTO) {
-        List<Category> users = new ArrayList<>();
+    public static List<Category> toCategories(List<CategoryDTO> categoriesDTO) {
+        List<Category> categories = new ArrayList<>();
 
-        if (categorysDTO != null && !categorysDTO.isEmpty()) {
-            users.addAll(categorysDTO.stream().map(CategoryDTO::toCategory).toList());
+        if (categoriesDTO != null && !categoriesDTO.isEmpty()) {
+            categories.addAll(categoriesDTO.stream().map(CategoryDTO::toCategory).toList());
         }
 
-        return users;
+        return categories;
     }
 }

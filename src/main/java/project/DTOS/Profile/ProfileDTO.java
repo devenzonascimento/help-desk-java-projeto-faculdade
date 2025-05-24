@@ -29,22 +29,22 @@ public record ProfileDTO(Long id, String name) implements Serializable {
     }
 
     public static List<ProfileDTO> fromProfiles(List<Profile> profiles) {
-        List<ProfileDTO> userDTO = new ArrayList<>();
+        List<ProfileDTO> profileDTO = new ArrayList<>();
 
         if (profiles != null && !profiles.isEmpty()) {
-            userDTO.addAll(profiles.stream().map(ProfileDTO::fromProfile).toList());
+            profileDTO.addAll(profiles.stream().map(ProfileDTO::fromProfile).toList());
         }
 
-        return userDTO;
+        return profileDTO;
     }
 
     public static List<Profile> toProfiles(List<ProfileDTO> profilesDTO) {
-        List<Profile> users = new ArrayList<>();
+        List<Profile> profiles = new ArrayList<>();
 
         if (profilesDTO != null && !profilesDTO.isEmpty()) {
-            users.addAll(profilesDTO.stream().map(ProfileDTO::toProfile).toList());
+            profiles.addAll(profilesDTO.stream().map(ProfileDTO::toProfile).toList());
         }
 
-        return users;
+        return profiles;
     }
 }

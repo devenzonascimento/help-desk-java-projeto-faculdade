@@ -29,22 +29,22 @@ public record TeamDTO(Long id, String name) implements Serializable {
     }
 
     public static List<TeamDTO> fromTeams(List<Team> teams) {
-        List<TeamDTO> userDTO = new ArrayList<>();
+        List<TeamDTO> teamsDTO = new ArrayList<>();
 
         if (teams != null && !teams.isEmpty()) {
-            userDTO.addAll(teams.stream().map(TeamDTO::fromTeam).toList());
+            teamsDTO.addAll(teams.stream().map(TeamDTO::fromTeam).toList());
         }
 
-        return userDTO;
+        return teamsDTO;
     }
 
     public static List<Team> toTeams(List<TeamDTO> teamsDTO) {
-        List<Team> users = new ArrayList<>();
+        List<Team> teams = new ArrayList<>();
 
         if (teamsDTO != null && !teamsDTO.isEmpty()) {
-            users.addAll(teamsDTO.stream().map(TeamDTO::toTeam).toList());
+            teams.addAll(teamsDTO.stream().map(TeamDTO::toTeam).toList());
         }
 
-        return users;
+        return teams;
     }
 }
