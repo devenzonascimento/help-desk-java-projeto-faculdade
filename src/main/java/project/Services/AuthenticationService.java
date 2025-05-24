@@ -17,11 +17,11 @@ public class AuthenticationService {
         User user = userRepository.findByEmail(email).orElse(null);
 
         if (user == null) {
-            return null; // TODO: Usuario não encontrado
+            throw new RuntimeException("Invalid credentials.");
         }
 
         if (!Objects.equals(user.getPassword(), password)) {
-            return null; // TODO: Senha diferente
+            throw new RuntimeException("Invalid credentials.");
         }
 
         return user;

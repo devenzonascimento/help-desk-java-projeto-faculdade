@@ -51,11 +51,11 @@ public class UserService {
         User user = userRepository.findByEmail(request.email()).orElse(null);
 
         if (user == null) {
-            return null; // TODO: Usuario não encontrado
+            throw new RuntimeException("Invalid credentials.");
         }
 
         if (!Objects.equals(user.getPassword(), request.currentPassword())) {
-            return null; // TODO: Senha diferente
+            throw new RuntimeException("Invalid credentials.");
         }
 
         user.setPassword(request.newPassword());
