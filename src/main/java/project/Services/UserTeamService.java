@@ -11,8 +11,6 @@ import project.Repositories.UserRepository;
 import project.Repositories.UserTeamRepository;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class UserTeamService {
@@ -27,11 +25,29 @@ public class UserTeamService {
     private UserTeamRepository userTeamRepository;
 
     public List<User> findAll() {
-        return userRepository.findAll();
+        List<User> users = userRepository.findAll();
+
+        List<User> userWithActiveTeams = users.stream().peek(user -> {
+            List<Team> teams = userTeamRepository.findActiveTeamsByUserId(user.getId());
+
+            user.setTeams(teams);
+        }).toList();
+
+        return userWithActiveTeams;
     }
 
     public User findByUserId(Long userId) {
-        return userRepository.findById(userId).orElse(null);
+        User user = userRepository.findById(userId).orElse(null);
+
+        if (user == null) {
+            return null;
+        }
+
+        List<Team> teams = userTeamRepository.findActiveTeamsByUserId(user.getId());
+
+        user.setTeams(teams);
+
+        return user;
     }
 
     @Transactional
@@ -40,32 +56,46 @@ public class UserTeamService {
 
         List<UserTeam> currentUserTeamList = userTeamRepository.findByUserId(userId);
 
-        // Times que já estão vinculados
-        Set<Long> currentTeamIds = currentUserTeamList.stream()
-                .map(userTeam -> userTeam.getTeam().getId())
-                .collect(Collectors.toSet());
+        List<UserTeam> userTeamsToDeactivate =  currentUserTeamList.stream()
+            .filter(userTeam ->
+                teamIds.stream().noneMatch(teamId -> userTeam.getId().equals(teamId) && userTeam.getActive())
+            )
+            .peek(userTeam -> userTeam.setActive(false)).toList();
 
-        // Novos vínculos
-        for (Long teamId : teamIds) {
-            if (!currentTeamIds.contains(teamId)) {
+        List<UserTeam> userTeamsToReactivate =  currentUserTeamList.stream()
+            .filter(userTeam ->
+                teamIds.stream().anyMatch(teamId -> userTeam.getId().equals(teamId) && !userTeam.getActive())
+            )
+            .peek(userTeam -> userTeam.setActive(true)).toList();
+
+        List<UserTeam> userTeamsToCreate = teamIds.stream()
+            .filter(teamId ->
+                currentUserTeamList.stream().noneMatch(userTeam -> userTeam.getId().equals(teamId))
+            )
+            .map(teamId -> {
                 Team team = teamRepository.findById(teamId)
                         .orElseThrow(() -> new RuntimeException("Team not found"));
 
                 UserTeam newUserTeam = new UserTeam();
                 newUserTeam.setUser(user);
                 newUserTeam.setTeam(team);
-                userTeamRepository.save(newUserTeam);
-            }
-        }
 
-        // Remover vínculos que não estão mais presentes
-        for (UserTeam userTeam : currentUserTeamList) {
-            if (!teamIds.contains(userTeam.getTeam().getId())) {
-                userTeamRepository.delete(userTeam);
-            }
-        }
+                return newUserTeam;
+            }).toList();
 
-        return userRepository.findById(userId).orElse(null);
+        userTeamsToDeactivate.forEach(userTeam -> {
+            userTeamRepository.save(userTeam);
+        });
+
+        userTeamsToReactivate.forEach(userTeam -> {
+            userTeamRepository.save(userTeam);
+        });
+
+        userTeamsToCreate.forEach(userTeam -> {
+            userTeamRepository.save(userTeam);
+        });
+
+        return this.findByUserId(userId);
     }
 
 }

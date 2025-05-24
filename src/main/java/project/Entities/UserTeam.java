@@ -31,5 +31,8 @@ public class UserTeam implements Serializable {
     @ManyToOne()
     @JoinColumn(name = "teamId", referencedColumnName = "id")
     private Team team;
+
+    @Column(name = "active", nullable = false, columnDefinition = "BOOLEAN DEFAULT true")
+    private Boolean active = true;
 }
 
