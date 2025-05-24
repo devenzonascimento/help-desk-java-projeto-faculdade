@@ -1,6 +1,6 @@
 package project.Controllers;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,18 +19,18 @@ public class UserTeamController {
     UserTeamService userTeamService;
 
     @PostMapping("/save-teams")
-    public ResponseEntity<UserTeamDTO> saveTeams(@RequestBody SaveTeamsRequest request) {
+    public ResponseEntity<UserTeamDTO> saveTeams(@RequestBody @Valid SaveTeamsRequest request) {
         User user = userTeamService.saveTeams(request.userId(), request.teamsIds());
 
         if (user == null) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
 
         return ResponseEntity.ok(UserTeamDTO.fromUser(user));
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserTeamDTO> findByUserId(@PathVariable @NotNull Long userId) {
+    public ResponseEntity<UserTeamDTO> findByUserId(@PathVariable Long userId) {
         User user = userTeamService.findByUserId(userId);
 
         return ResponseEntity.ok(UserTeamDTO.fromUser(user));
