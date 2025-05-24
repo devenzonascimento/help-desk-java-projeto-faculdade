@@ -39,7 +39,11 @@ public class UserService {
         return userRepository.save(userToCreate);
     }
 
-    public List<User> getAll() {
+    public User findById(Long userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
+
+    public List<User> findAll() {
         return userRepository.findAll();
     }
 
