@@ -12,6 +12,7 @@ import project.Repositories.TicketRepository;
 import project.Repositories.UserRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -30,13 +31,13 @@ public class TicketService {
         User requester = userRepository.findById(request.userRequesterId()).orElse((null));
 
         if (requester == null) {
-            return null; // TODO: Retornar erro de usuario não encontrado
+            throw new RuntimeException("User not found.");
         }
 
         Team team = teamRepository.findById(request.teamId()).orElse(null);
 
         if (team == null) {
-            return null; // TODO: Retornar erro de equipe não encontrada
+            throw new RuntimeException("Team not found.");
         }
 
         boolean isUserBelongToTeam = requester.getTeams().stream().anyMatch(
@@ -44,7 +45,7 @@ public class TicketService {
         );
 
         if (!isUserBelongToTeam) {
-            return null; // TODO: Retornar erro de que o usuario não pertence a equipe escolhida
+            throw new RuntimeException("User does not belong to team.");
         }
 
         Ticket ticketToOpen = new Ticket();
@@ -57,5 +58,20 @@ public class TicketService {
         ticketToOpen.setLastStatus(AttendanceStatus.AWAITING);
 
         return ticketRepository.save(ticketToOpen);
+    }
+
+    public List<Ticket> findAllOpenTicketsByTeam(Long teamId) {
+        List<Ticket> openTickets = ticketRepository.findByTeamIdAndEndDateIsNull(teamId);
+
+        return openTickets;
+    }
+
+    public List<Ticket> findAllOpenAndNotCompletedTickets() {
+        List<Ticket> openTickets = ticketRepository.findByEndDateIsNull();
+
+        return openTickets
+            .stream()
+            .filter(ticket -> ticket.getLastStatus() != AttendanceStatus.COMPLETED)
+            .toList();
     }
 }

@@ -6,6 +6,8 @@ import project.Enums.AttendanceStatus;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public record TicketDTO(
         Long ticketId,
@@ -42,5 +44,15 @@ public record TicketDTO(
                 ticket.getStartDate(),
                 ticket.getEndDate()
         );
+    }
+
+    public static List<TicketDTO> fromTickets(List<Ticket> tickets) {
+        List<TicketDTO> ticketsDTO = new ArrayList<>();
+
+        if (tickets != null && !tickets.isEmpty()) {
+            ticketsDTO.addAll(tickets.stream().map(TicketDTO::fromTicket).toList());
+        }
+
+        return ticketsDTO;
     }
 }

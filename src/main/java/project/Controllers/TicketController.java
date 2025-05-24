@@ -10,6 +10,8 @@ import project.DTOS.Ticket.TicketDTO;
 import project.Entities.Ticket;
 import project.Services.TicketService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/ticket")
 public class TicketController {
@@ -22,5 +24,19 @@ public class TicketController {
         Ticket openedTicket = ticketService.openTicket(request);
 
         return ResponseEntity.ok(TicketDTO.fromTicket(openedTicket));
+    }
+
+    @GetMapping("/open-not-completed")
+    public @ResponseBody ResponseEntity<List<TicketDTO>> findAllOpenAndNotCompletedTickets() {
+        List<Ticket> openTickets = ticketService.findAllOpenAndNotCompletedTickets();
+
+        return ResponseEntity.ok(TicketDTO.fromTickets(openTickets));
+    }
+
+    @GetMapping("/open-by-team/{teamId}")
+    public @ResponseBody ResponseEntity<List<TicketDTO>> findAllOpenTicketsByTeam(@PathVariable Long teamId) {
+        List<Ticket> openTickets = ticketService.findAllOpenTicketsByTeam(teamId);
+
+        return ResponseEntity.ok(TicketDTO.fromTickets(openTickets));
     }
 }
