@@ -30,4 +30,15 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.badRequest().body(response);
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Object> handleRuntimeExceptions(
+            RuntimeException exception
+    ) {
+        Map<String, String> errorMessage = new HashMap<>();
+
+        errorMessage.put("errorMessage", exception.getMessage());
+
+        return ResponseEntity.badRequest().body(errorMessage);
+    }
 }
