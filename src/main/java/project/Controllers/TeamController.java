@@ -23,6 +23,17 @@ public class TeamController {
         return ResponseEntity.ok(TeamDTO.fromTeam(createdTeam));
     }
 
+    @GetMapping("/{teamId}")
+    public @ResponseBody ResponseEntity<TeamDTO> findById(@PathVariable Long teamId) {
+        Team team = teamService.findById(teamId);
+
+        if (team == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        return ResponseEntity.ok(TeamDTO.fromTeam(team));
+    }
+
     @GetMapping("")
     public @ResponseBody ResponseEntity<List<TeamDTO>> findAll() {
         List<Team> teams = teamService.findAll();
