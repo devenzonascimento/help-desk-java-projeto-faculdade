@@ -1,6 +1,7 @@
 package project.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.DTOS.Team.TeamDTO;
@@ -20,7 +21,7 @@ public class TeamController {
     public @ResponseBody ResponseEntity<TeamDTO> create(@PathVariable String team) {
         Team createdTeam = teamService.create(team);
 
-        return ResponseEntity.ok(TeamDTO.fromTeam(createdTeam));
+        return ResponseEntity.status(HttpStatus.CREATED).body(TeamDTO.fromTeam(createdTeam));
     }
 
     @GetMapping("/{teamId}")
@@ -28,7 +29,7 @@ public class TeamController {
         Team team = teamService.findById(teamId);
 
         if (team == null) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
 
         return ResponseEntity.ok(TeamDTO.fromTeam(team));
