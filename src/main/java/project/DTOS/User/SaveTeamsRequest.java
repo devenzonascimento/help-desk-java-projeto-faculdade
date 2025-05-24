@@ -1,6 +1,5 @@
 package project.DTOS.User;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
@@ -10,7 +9,6 @@ public record SaveTeamsRequest(
         Long userId,
 
         @NotNull(message = "teamsIds is mandatory")
-        @NotEmpty(message = "teamsIds cannot be empty")
         List<@NotNull(message = "Each teamId must be a number") Long> teamsIds
 ) {
 }
