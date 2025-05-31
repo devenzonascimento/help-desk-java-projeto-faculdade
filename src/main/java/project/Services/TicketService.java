@@ -10,8 +10,10 @@ import project.Enums.AttendanceStatus;
 import project.Repositories.TeamRepository;
 import project.Repositories.TicketRepository;
 import project.Repositories.UserRepository;
+import project.Repositories.UserTeamRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,13 +21,16 @@ import java.util.Objects;
 public class TicketService {
 
     @Autowired
-    TicketRepository ticketRepository;
+    private TicketRepository ticketRepository;
 
     @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private TeamRepository teamRepository;
+
+    @Autowired
+    private UserTeamRepository userTeamRepository;
 
     public Ticket openTicket(OpenTicketRequest request) {
         User requester = userRepository.findById(request.userRequesterId()).orElse((null));
@@ -61,17 +66,37 @@ public class TicketService {
     }
 
     public List<Ticket> findAllOpenTicketsByTeam(Long teamId) {
-        List<Ticket> openTickets = ticketRepository.findByTeamIdAndEndDateIsNull(teamId);
+        List<Ticket> openTickets = ticketRepository.findByTeamIdAndEndDateIsNullOrderByStartDateDesc(teamId);
 
         return openTickets;
     }
 
     public List<Ticket> findAllOpenAndNotCompletedTickets() {
-        List<Ticket> openTickets = ticketRepository.findByEndDateIsNull();
+        List<Ticket> openTickets = ticketRepository.findByEndDateIsNullOrderByStartDateDesc();
 
         return openTickets
             .stream()
             .filter(ticket -> ticket.getLastStatus() != AttendanceStatus.COMPLETED)
             .toList();
+    }
+
+    public List<Ticket> findAllOpenTicketsByRequester(Long requesterId) {
+        List<Ticket> openTickets = ticketRepository.findByRequesterIdAndEndDateIsNullOrderByStartDateDesc(requesterId);
+
+        return openTickets;
+    }
+
+    public List<Ticket> findAllOpenTicketsByAttendantTeams(Long attendantId) {
+        List<Team> attendantActiveTeams = userTeamRepository.findActiveTeamsByUserId(attendantId);
+
+        List<Ticket> tickets = new ArrayList<>();
+
+        attendantActiveTeams.forEach(team -> {
+            List<Ticket> foundTickets = ticketRepository.findByTeamIdAndEndDateIsNullOrderByStartDateDesc(team.getId());
+
+            tickets.addAll(foundTickets);
+        });
+
+        return tickets;
     }
 }

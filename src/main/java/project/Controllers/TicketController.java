@@ -39,4 +39,18 @@ public class TicketController {
 
         return ResponseEntity.ok(TicketDTO.fromTickets(openTickets));
     }
+
+    @GetMapping("/open-by-requester/{requesterId}")
+    public @ResponseBody ResponseEntity<List<TicketDTO>> findAllOpenTicketsByRequester(@PathVariable Long requesterId) {
+        List<Ticket> openTickets = ticketService.findAllOpenTicketsByRequester(requesterId);
+
+        return ResponseEntity.ok(TicketDTO.fromTickets(openTickets));
+    }
+
+    @GetMapping("/open-by-attendant-teams/{attendantId}")
+    public @ResponseBody ResponseEntity<List<TicketDTO>> findAllOpenTicketsByAttendantTeams(@PathVariable Long attendantId) {
+        List<Ticket> openTickets = ticketService.findAllOpenTicketsByAttendantTeams(attendantId);
+
+        return ResponseEntity.ok(TicketDTO.fromTickets(openTickets));
+    }
 }

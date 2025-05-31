@@ -5,8 +5,12 @@ import project.Entities.Ticket;
 
 import java.util.List;
 
-public interface TicketRepository extends JpaRepository<Ticket, Long>  {
-    List<Ticket> findByTeamIdAndEndDateIsNull(Long teamId);
+public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
-    List<Ticket> findByEndDateIsNull();
+    List<Ticket> findByTeamIdAndEndDateIsNullOrderByStartDateDesc(Long teamId);
+
+    List<Ticket> findByRequesterIdAndEndDateIsNullOrderByStartDateDesc(Long requesterId);
+
+    List<Ticket> findByEndDateIsNullOrderByStartDateDesc();
 }
+
