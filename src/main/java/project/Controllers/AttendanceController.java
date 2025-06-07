@@ -27,4 +27,11 @@ public class AttendanceController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/forward-to-requester")
+    public @ResponseBody ResponseEntity<Attendance> forwardToRequester(@RequestBody @Valid ForwardToRequesterRequest request) {
+        attendanceService.forwardToRequester(request);
+
+        return ResponseEntity.ok().build();
+    }
 }

@@ -108,4 +108,42 @@ public class AttendanceService {
         attendance.setUserTeam(foundUserTeam);
         attendanceRepository.save(attendance);
     }
+
+    @Transactional
+    public void forwardToRequester(ForwardToRequesterRequest request) {
+        Ticket ticket = ticketRepository.findById(request.ticketId()).orElse(null);
+        // O ticket existe?
+        if (ticket == null) {
+            throw new RuntimeException("Failure to forward ticket, the informed ticket does not exist.");
+        }
+
+        // O ticket não foi iniciado ou devolvido pelo solicitante?
+        if (!ticket.lastStatusContains(List.of(AttendanceStatus.STARTED, AttendanceStatus.RETURNED))) {
+            throw new RuntimeException("Failure to forward ticket, the informed ticket is not available to forward.");
+        }
+
+        User attendant = userRepository.findById(request.attendantId()).orElse(null);
+        // O atendente existe?
+        if (attendant == null) {
+            throw new RuntimeException("Failure to forward ticket, attendant not found.");
+        }
+
+        // O usuário que vai encaminhar o atendimento é o proprio solicitante?
+        if (ticket.getRequester().equals(attendant)) {
+            throw new RuntimeException("Failure to forward ticket, requester cannot forward your own attendance.");
+        }
+
+        UserTeam foundUserTeam = findAttendantTeam(ticket, attendant.getId());
+
+        ticket.setLastStatus(AttendanceStatus.FORWARDED);
+        ticketRepository.save(ticket);
+
+        Attendance attendance = new Attendance();
+        attendance.setTicket(ticket);
+        attendance.setDate(LocalDateTime.now());
+        attendance.setStatus(AttendanceStatus.FORWARDED);
+        attendance.setDescription(request.description());
+        attendance.setUserTeam(foundUserTeam);
+        attendanceRepository.save(attendance);
+    }
 }
