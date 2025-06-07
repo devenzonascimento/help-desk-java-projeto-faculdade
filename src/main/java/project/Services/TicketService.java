@@ -45,14 +45,6 @@ public class TicketService {
             throw new RuntimeException("Team not found.");
         }
 
-        boolean isUserBelongToTeam = requester.getTeams().stream().anyMatch(
-            t -> Objects.equals(t.getId(), team.getId())
-        );
-
-        if (!isUserBelongToTeam) {
-            throw new RuntimeException("User does not belong to team.");
-        }
-
         Ticket ticketToOpen = new Ticket();
 
         ticketToOpen.setRequester(requester);
