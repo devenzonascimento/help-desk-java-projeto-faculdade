@@ -7,6 +7,7 @@ import project.Enums.AttendanceStatus;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @AllArgsConstructor
@@ -56,6 +57,22 @@ public class Ticket implements Serializable {
     @ManyToOne
     @JoinColumn(name = "team_id", referencedColumnName = "id", nullable = false)
     private Team team;
+
+    public Attendance getLastAttendance() {
+        return attendances.stream()
+            .max(Comparator.comparing(Attendance::getDate))
+            .orElse(null);
+    }
+
+    public boolean lastStatusContains(List<AttendanceStatus> statusList) {
+        for (AttendanceStatus status : statusList) {
+            if (lastStatus.equals(status)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     // @Column(name = "file_id")
     // private Long fileId;
