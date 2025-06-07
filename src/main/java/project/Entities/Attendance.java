@@ -2,8 +2,6 @@ package project.Entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.dialect.PostgreSQLEnumJdbcType;
 import project.Enums.AttendanceStatus;
 
 import java.io.Serial;
@@ -30,7 +28,7 @@ public class Attendance implements Serializable {
     private AttendanceStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_team_id", nullable = false)
+    @JoinColumn(name = "user_team_id", nullable = true)
     private UserTeam userTeam;
 
     @Column(name = "date", nullable = false)
