@@ -146,4 +146,40 @@ public class AttendanceService {
         attendance.setUserTeam(foundUserTeam);
         attendanceRepository.save(attendance);
     }
+
+    @Transactional
+    public void returnToAttendance(ReturnToAttendanceRequest request) {
+        Ticket ticket = ticketRepository.findById(request.ticketId()).orElse(null);
+        // O ticket existe?
+        if (ticket == null) {
+            throw new RuntimeException("Failure to return ticket, the informed ticket does not exist.");
+        }
+
+        // O ticket ainda não foi devolvido ao solicitante?
+        if (!ticket.lastStatusContains(List.of(AttendanceStatus.FORWARDED))) {
+            throw new RuntimeException("Failure to return ticket, the informed ticket is not returned to requester yet.");
+        }
+
+        User requester = userRepository.findById(request.requesterId()).orElse(null);
+        // O solicitante existe?
+        if (requester == null) {
+            throw new RuntimeException("Failure to return ticket, requester not found.");
+        }
+
+        // O usuário que vai devolver para o atendimento não é o proprio solicitante?
+        if (!ticket.getRequester().equals(requester)) {
+            throw new RuntimeException("Failure to return ticket, only the requester can return to the attendance.");
+        }
+
+        ticket.setLastStatus(AttendanceStatus.RETURNED);
+        ticketRepository.save(ticket);
+
+        Attendance attendance = new Attendance();
+        attendance.setTicket(ticket);
+        attendance.setDate(LocalDateTime.now());
+        attendance.setStatus(AttendanceStatus.RETURNED);
+        attendance.setDescription(request.description());
+        attendance.setUserTeam(null);
+        attendanceRepository.save(attendance);
+    }
 }

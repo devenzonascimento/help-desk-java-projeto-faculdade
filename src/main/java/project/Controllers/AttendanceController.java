@@ -34,4 +34,11 @@ public class AttendanceController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/return-to-attendance")
+    public @ResponseBody ResponseEntity<Attendance> returnToAttendance(@RequestBody @Valid ReturnToAttendanceRequest request) {
+        attendanceService.returnToAttendance(request);
+
+        return ResponseEntity.ok().build();
+    }
 }
