@@ -41,4 +41,11 @@ public class AttendanceController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("/finalize")
+    public @ResponseBody ResponseEntity<Attendance> finalize(@RequestBody @Valid FinalizeAttendanceRequest request) {
+        attendanceService.finalizeToAttendance(request);
+
+        return ResponseEntity.ok().build();
+    }
 }

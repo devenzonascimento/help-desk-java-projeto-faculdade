@@ -182,4 +182,58 @@ public class AttendanceService {
         attendance.setUserTeam(null);
         attendanceRepository.save(attendance);
     }
+
+    @Transactional
+    public void finalizeToAttendance(FinalizeAttendanceRequest request) {
+        Ticket ticket = ticketRepository.findById(request.ticketId()).orElse(null);
+        // O ticket existe?
+        if (ticket == null) {
+            throw new RuntimeException("Failure to finalize ticket, the informed ticket does not exist.");
+        }
+
+        // O ticket ainda não foi devolvido ao solicitante?
+        if (!ticket.lastStatusContains(List.of(AttendanceStatus.FORWARDED))) {
+            throw new RuntimeException("Failure to finalize ticket, the informed ticket is not returned to requester yet.");
+        }
+
+        User requester = userRepository.findById(request.requesterId()).orElse(null);
+        // O solicitante existe?
+        if (requester == null) {
+            throw new RuntimeException("Failure to finalize ticket, requester not found.");
+        }
+
+        // O usuário que vai finalizar o atendimento não é o proprio solicitante?
+        if (!ticket.getRequester().equals(requester)) {
+            throw new RuntimeException("Failure to finalize ticket, only the requester can finalize the attendance.");
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        ticket.setEndDate(now);
+        ticket.setLastStatus(AttendanceStatus.COMPLETED);
+        ticketRepository.save(ticket);
+
+        Attendance attendance = new Attendance();
+        attendance.setTicket(ticket);
+        attendance.setDate(now);
+        attendance.setDescription("");
+        attendance.setStatus(AttendanceStatus.COMPLETED);
+        attendance.setUserTeam(null);
+        attendanceRepository.save(attendance);
+    }
+
+    private UserTeam findAttendantTeam(Ticket ticket, Long attendantId) {
+        List<UserTeam> usersTeams = userTeamRepository.findByUserId(attendantId);
+
+        UserTeam foundUserTeam = usersTeams.stream()
+                .filter(ut -> ut.getTeam().equals(ticket.getTeam()) && ut.getActive())
+                .findFirst()
+                .orElse(null);
+
+        // O atendente participa do time informado?
+        if (foundUserTeam == null) {
+            throw new RuntimeException("Failure, the attendant does not belong to team.");
+        }
+
+        return foundUserTeam;
+    }
 }
