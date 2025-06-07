@@ -68,4 +68,44 @@ public class AttendanceService {
 
         return attendanceRepository.save(attendance);
     }
+
+    @Transactional
+    public void transferToAnotherTeam(TransferToAnotherTeamRequest request) {
+        Ticket ticket = ticketRepository.findById(request.ticketId()).orElse(null);
+        // O ticket existe?
+        if (ticket == null) {
+            throw new RuntimeException("Failure to transfer ticket, the informed ticket does not exist.");
+        }
+
+        User attendant = userRepository.findById(request.attendantId()).orElse(null);
+        // O atendente existe?
+        if (attendant == null) {
+            throw new RuntimeException("Failure to transfer ticket, attendant not found.");
+        }
+
+        UserTeam foundUserTeam = findAttendantTeam(ticket, attendant.getId());
+
+        Team team = teamRepository.findById(request.teamId()).orElse(null);
+        // A equipe existe?
+        if (team == null) {
+            throw new RuntimeException("Failure to transfer ticket, team not found.");
+        }
+
+        String auditMessage = "Transfering ticket"
+                + String.format(" FROM TEAM [ID: %d] [NAME: %s]", ticket.getTeam().getId(), ticket.getTeam().getName())
+                + String.format(" TO TEAM [ID: %d] [NAME: %s]", team.getId(), team.getName())
+                + String.format(" BY ATTENDANT [ID: %d] [NAME: %s]", attendant.getId(), attendant.getName());
+
+        ticket.setTeam(team);
+        ticket.setInternalReport(auditMessage);
+        ticketRepository.save(ticket);
+
+        Attendance attendance = new Attendance();
+        attendance.setTicket(ticket);
+        attendance.setDate(LocalDateTime.now());
+        attendance.setStatus(AttendanceStatus.FORWARDED);
+        attendance.setDescription(auditMessage);
+        attendance.setUserTeam(foundUserTeam);
+        attendanceRepository.save(attendance);
+    }
 }

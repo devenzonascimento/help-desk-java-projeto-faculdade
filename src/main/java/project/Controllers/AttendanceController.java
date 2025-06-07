@@ -20,4 +20,11 @@ public class AttendanceController {
 
         return ResponseEntity.ok(attendance);
     }
+
+    @PostMapping("/transfer-to-another-team")
+    public @ResponseBody ResponseEntity<Attendance> transferToAnotherTeam(@RequestBody @Valid TransferToAnotherTeamRequest request) {
+        attendanceService.transferToAnotherTeam(request);
+
+        return ResponseEntity.ok().build();
+    }
 }
