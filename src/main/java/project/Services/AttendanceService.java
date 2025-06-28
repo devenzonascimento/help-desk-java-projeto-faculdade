@@ -191,21 +191,45 @@ public class AttendanceService {
             throw new RuntimeException("Failure to finalize ticket, the informed ticket does not exist.");
         }
 
-        // O ticket ainda não foi devolvido ao solicitante?
-        if (!ticket.lastStatusContains(List.of(AttendanceStatus.FORWARDED))) {
-            throw new RuntimeException("Failure to finalize ticket, the informed ticket is not returned to requester yet.");
+        // O ticket ainda não foi devolvido ao solicitante e nem retornado para o atendente?
+        if (!ticket.lastStatusContains(List.of(AttendanceStatus.FORWARDED, AttendanceStatus.RETURNED))) {
+            throw new RuntimeException("Failure to finalize ticket, the informed ticket is not forwarded to requester or not returned to attendant yet.");
         }
 
-        User requester = userRepository.findById(request.requesterId()).orElse(null);
-        // O solicitante existe?
-        if (requester == null) {
-            throw new RuntimeException("Failure to finalize ticket, requester not found.");
+        // Se o ticket foi encaminhado, ele deveria estar com o solicitante, caso contrario dispara erro
+        if (ticket.lastStatusContains(List.of(AttendanceStatus.FORWARDED))) {
+            User requester = userRepository.findById(request.userId()).orElse(null);
+
+            // O solicitante existe?
+            if (requester == null) {
+                throw new RuntimeException("Failure to finalize ticket, requester not found.");
+            }
+
+            // O usuário que vai finalizar o atendimento não é o proprio solicitante?
+            if (!ticket.getRequester().equals(requester)) {
+                throw new RuntimeException("Failure to finalize ticket, only the requester can finalize the ticket.");
+            }
         }
 
-        // O usuário que vai finalizar o atendimento não é o proprio solicitante?
-        if (!ticket.getRequester().equals(requester)) {
-            throw new RuntimeException("Failure to finalize ticket, only the requester can finalize the attendance.");
+        UserTeam userTeamWhoFinalizeTicket = null;
+
+        // Se o ticket foi retornado, ele deveria estar com o atendente, caso contrario dispara erro
+        if (ticket.lastStatusContains(List.of(AttendanceStatus.RETURNED))) {
+            User attendant = userRepository.findById(request.userId()).orElse(null);
+
+            // O atendente existe?
+            if (attendant == null) {
+                throw new RuntimeException("Failure to finalize ticket, attendant not found.");
+            }
+
+            // O usuário que vai finalizar o atendimento é o proprio solicitante?
+            if (ticket.getRequester().equals(attendant)) {
+                throw new RuntimeException("Failure to finalize ticket, requester cannot finalize the ticket.");
+            }
+
+            userTeamWhoFinalizeTicket = findAttendantTeam(ticket, attendant.getId());
         }
+
 
         LocalDateTime now = LocalDateTime.now();
         ticket.setEndDate(now);
@@ -215,9 +239,9 @@ public class AttendanceService {
         Attendance attendance = new Attendance();
         attendance.setTicket(ticket);
         attendance.setDate(now);
-        attendance.setDescription("");
+        attendance.setDescription(request.description());
         attendance.setStatus(AttendanceStatus.COMPLETED);
-        attendance.setUserTeam(null);
+        attendance.setUserTeam(userTeamWhoFinalizeTicket);
         attendanceRepository.save(attendance);
     }
 
